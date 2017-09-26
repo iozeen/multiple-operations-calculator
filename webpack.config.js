@@ -1,14 +1,11 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: __dirname + '/src/index.html',
-  filename: 'index.html',
-  inject: 'body'
-});
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var path = require("path");
 
 module.exports = {
-  entry: __dirname + '/src/index.js',
+  entry: './src/index.js',
   output: {
-    path: __dirname + '/dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: 'index_bundle.js'
   },
   module: {
@@ -16,16 +13,31 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        use: ['babel-loader']
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader',
+          loader: ['css-loader'],
+          publicPath: '/dist'
+        })
       }
     ],
   },
   devServer: {
     historyApiFallback: true,
   },
-  plugins: [HtmlWebpackPluginConfig]
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: __dirname + '/src/index.html',
+      filename: 'index.html',
+      inject: 'body'
+    }),
+    new ExtractTextPlugin({
+      filename: 'style.css',
+      disable: false,
+      allChunks: true
+    })
+  ]
 }

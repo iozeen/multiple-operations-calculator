@@ -16,6 +16,10 @@ html, body {
   width: 100%;
 }
 
+.container.hidden{
+  display: none;
+}
+
 .display {
   width: 50%;
   height: 10%;
